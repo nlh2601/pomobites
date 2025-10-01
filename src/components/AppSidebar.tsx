@@ -39,14 +39,19 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end
-                      className={({ isActive }) =>
-                        isActive
-                          ? "flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary font-medium rounded-lg"
-                          : "flex items-center gap-3 px-3 py-2 hover:bg-secondary rounded-lg transition-colors"
-                      }
                     >
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
+                      {({ isActive }) => (
+                        <div
+                          className={
+                            isActive
+                              ? "flex items-center gap-3 px-3 py-2 bg-primary text-primary-foreground font-semibold rounded-lg shadow-sm"
+                              : "flex items-center gap-3 px-3 py-2 text-foreground hover:bg-secondary rounded-lg transition-colors"
+                          }
+                        >
+                          <item.icon className="h-5 w-5" />
+                          <span>{item.title}</span>
+                        </div>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
