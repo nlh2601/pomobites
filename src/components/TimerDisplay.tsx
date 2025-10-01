@@ -34,9 +34,34 @@ export const TimerDisplay = ({
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (timeLeft === 0) {
-      // Timer completed
-      const audio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZSA0PVqnl8bBgHgU7k9r0z3osBC2Dz/LZkj0KFmG56OmhUhELSKHi8sFuJAU6jtT0yn4vBSh+zPDckzsJFlyx5/GsWRgLPpfa8tCAKwcpgMzw3ZM7ChVdsOfxrVoYCz6X2vLQgCsHKYDM8N2TOwoVXbDn8a1aGAs+l9ry0IArBymAzPDdkzsKFV2w5/GtWhgLPpfa8tCAKwcpgMzw3ZM7ChVdsOfxrVoYCz6X2vLQgCsHKYDM8N2TOwoVXbDn8a1aGAs+l9ry0IArBymAzPDdkzsKFV2w5/GtWhgLPpfa8tCAKwcpgMzw3ZM7ChVdsOfxrVoYCz6X2vLQgCsHKYDM8N2TOwoVXbDn8a1aGAs+l9ry0IArBymAzPDdkzsKFV2w5/GtWhgLPpfa8tCAKwcpgMzw3ZM7ChVdsOfxrVoYCz6X2vLQgCsHKYDM8N2TOwoVXbDn8a1aGAs+l9ry0IArBymAzPDdkzsKFV2w5/GtWhgLPpfa8tCAKwcpgMzw3ZM7ChVdsOfxrVoYCz6X2vLQgCsHKYDM8N2TOwoVXbDn8a1aGAs+l9ry0IArBymAzPDdkzsKFV2w5/GtWhgLPpfa8tCAKwcpgMzw3ZM7ChVdsOfxrVoYCz6X2vLQgCsHKYDM8N2TOwoVXbDn8a1aGAs+l9ry0IArBymAzPDdkzsKFV2w5/GtWhgLPpfa8tCAKwcpgMzw3ZM7ChVdsOfxrVoYCz6X2vLQgCsHKYDM8N2TOwoVXbDn8a1aGAs+l9ry0IArBymAzPDdkzsK");
-      audio.play().catch(() => {});
+      // Timer completed - play cheerful notification sound
+      const playCompletionSound = () => {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        
+        // Create a pleasant chime sequence (C-E-G major chord)
+        const notes = [523.25, 659.25, 783.99];
+        
+        notes.forEach((frequency, index) => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.value = frequency;
+          oscillator.type = 'sine';
+          
+          const startTime = audioContext.currentTime + (index * 0.15);
+          gainNode.gain.setValueAtTime(0, startTime);
+          gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.01);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.5);
+          
+          oscillator.start(startTime);
+          oscillator.stop(startTime + 0.5);
+        });
+      };
+      
+      playCompletionSound();
 
       if (!isBreak) {
         // Work session ended, start break
@@ -128,8 +153,8 @@ export const TimerDisplay = ({
         {/* Timer Display */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <div className="text-7xl font-bold tracking-tight">{formatTime(timeLeft)}</div>
-          <div className="text-sm font-medium uppercase tracking-wider mt-2 text-muted-foreground">
-            {isBreak ? "Break" : "Focus"}
+          <div className="text-base font-semibold uppercase tracking-wider mt-3 text-primary">
+            {isBreak ? "🍵 Snack Break" : "🍅 Taking a Bite"}
           </div>
         </div>
       </div>
@@ -163,9 +188,38 @@ export const TimerDisplay = ({
         </Button>
       </div>
 
-      {/* Session Counter */}
-      <div className="mt-8 text-sm text-muted-foreground">
-        <span className="font-medium">{currentRound} of {roundsBeforeLongBreak}</span> sessions
+      {/* Bite Counter */}
+      <div className="mt-8 text-base">
+        <span className="font-semibold text-primary">{currentRound}</span>
+        <span className="text-muted-foreground"> of </span>
+        <span className="font-semibold text-primary">{roundsBeforeLongBreak}</span>
+        <span className="text-muted-foreground"> bites completed 🍪</span>
+      </div>
+      
+      {/* Snack Stack Progress */}
+      <div className="mt-4 flex gap-2">
+        {Array.from({ length: roundsBeforeLongBreak }).map((_, index) => (
+          <div
+            key={index}
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-xl transition-all duration-300 ${
+              index < currentRound - 1 
+                ? "bg-primary/20 scale-110" 
+                : "bg-secondary opacity-50"
+            }`}
+          >
+            {index < currentRound - 1 ? "🍪" : "⭕"}
+          </div>
+        ))}
+      </div>
+      
+      {/* Motivational Message */}
+      <div className="mt-6 text-sm text-muted-foreground italic max-w-md text-center">
+        {isBreak 
+          ? "Time to recharge with a tasty break! ☕" 
+          : currentRound === 1 
+            ? "Let's start munching through your tasks! 🎉"
+            : "You're on a roll! Keep those bites coming! 💪"
+        }
       </div>
     </div>
   );

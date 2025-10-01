@@ -25,19 +25,21 @@ export const SettingsPanel = ({
 }: SettingsPanelProps) => {
   return (
     <div className="flex items-center justify-center min-h-screen p-8">
-      <Card className="w-full max-w-2xl">
-        <CardHeader>
-          <CardTitle>Timer Settings</CardTitle>
-          <CardDescription>Customize your Pomodoro timer to fit your workflow</CardDescription>
+      <Card className="w-full max-w-2xl shadow-lg border-2">
+        <CardHeader className="space-y-3">
+          <CardTitle className="text-3xl">🍽️ Bite Settings</CardTitle>
+          <CardDescription className="text-base">
+            Customize your productivity bites to match your appetite for success!
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
           {/* Work Duration */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label htmlFor="work-duration" className="text-base">
-                Work Duration
+              <Label htmlFor="work-duration" className="text-base font-semibold">
+                🍅 Bite Duration
               </Label>
-              <span className="text-2xl font-semibold text-primary">{workDuration} min</span>
+              <span className="text-2xl font-bold text-primary">{workDuration} min</span>
             </div>
             <Slider
               id="work-duration"
@@ -53,10 +55,10 @@ export const SettingsPanel = ({
           {/* Short Break */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label htmlFor="short-break" className="text-base">
-                Short Break
+              <Label htmlFor="short-break" className="text-base font-semibold">
+                🍪 Quick Snack
               </Label>
-              <span className="text-2xl font-semibold text-primary">{shortBreak} min</span>
+              <span className="text-2xl font-bold text-primary">{shortBreak} min</span>
             </div>
             <Slider
               id="short-break"
@@ -72,10 +74,10 @@ export const SettingsPanel = ({
           {/* Long Break */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label htmlFor="long-break" className="text-base">
-                Long Break
+              <Label htmlFor="long-break" className="text-base font-semibold">
+                🍰 Feast Break
               </Label>
-              <span className="text-2xl font-semibold text-primary">{longBreak} min</span>
+              <span className="text-2xl font-bold text-primary">{longBreak} min</span>
             </div>
             <Slider
               id="long-break"
@@ -91,10 +93,10 @@ export const SettingsPanel = ({
           {/* Rounds Before Long Break */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label htmlFor="rounds" className="text-base">
-                Rounds Before Long Break
+              <Label htmlFor="rounds" className="text-base font-semibold">
+                🍱 Bites Before Feast
               </Label>
-              <span className="text-2xl font-semibold text-primary">{roundsBeforeLongBreak}</span>
+              <span className="text-2xl font-bold text-primary">{roundsBeforeLongBreak}</span>
             </div>
             <Slider
               id="rounds"

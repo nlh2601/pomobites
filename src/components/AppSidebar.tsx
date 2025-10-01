@@ -1,4 +1,5 @@
-import { Timer, Settings } from "lucide-react";
+import { Timer, Settings, Cookie } from "lucide-react";
+import tomatoChef from "@/assets/tomato-chef.png";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -19,8 +20,14 @@ const items = [
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader className="border-b p-6">
-        <h1 className="text-2xl font-bold text-primary">Pomodoro</h1>
+      <SidebarHeader className="border-b p-6 space-y-2">
+        <div className="flex items-center gap-3">
+          <img src={tomatoChef} alt="Tomato Chef Mascot" className="w-12 h-12" />
+          <h1 className="text-2xl font-bold text-primary">PomoBites</h1>
+        </div>
+        <p className="text-xs text-muted-foreground italic">
+          Your tasty productivity companion! 🍅
+        </p>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
