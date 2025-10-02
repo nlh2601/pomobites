@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { logSession } from "@/components/SessionLogger";
 
 interface TimerDisplayProps {
   workDuration: number;
@@ -9,6 +10,7 @@ interface TimerDisplayProps {
   roundsBeforeLongBreak: number;
   background: string;
   soundOption: string;
+  onTimerStateChange?: (isRunning: boolean) => void;
 }
 
 export const TimerDisplay = ({
@@ -18,12 +20,14 @@ export const TimerDisplay = ({
   roundsBeforeLongBreak,
   background,
   soundOption,
+  onTimerStateChange,
 }: TimerDisplayProps) => {
   const [timeLeft, setTimeLeft] = useState(workDuration * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
   const [totalTime, setTotalTime] = useState(workDuration * 60);
+  const [sessionStartTime, setSessionStartTime] = useState(workDuration * 60);
 
   useEffect(() => {
     setTimeLeft(workDuration * 60);
@@ -75,27 +79,38 @@ export const TimerDisplay = ({
       playCompletionSound();
 
       if (!isBreak) {
-        // Work session ended, start break
+        // Work session ended - log it
+        const sessionDuration = sessionStartTime;
+        logSession(sessionDuration, "work");
+        
+        // Start break
         if (currentRound % roundsBeforeLongBreak === 0) {
           // Long break
           setTimeLeft(longBreak * 60);
           setTotalTime(longBreak * 60);
+          setSessionStartTime(longBreak * 60);
         } else {
           // Short break
           setTimeLeft(shortBreak * 60);
           setTotalTime(shortBreak * 60);
+          setSessionStartTime(shortBreak * 60);
         }
         setIsBreak(true);
       } else {
-        // Break ended, start work automatically
+        // Break ended - log it, start work automatically
+        logSession(sessionStartTime, "break");
+        
         setTimeLeft(workDuration * 60);
         setTotalTime(workDuration * 60);
+        setSessionStartTime(workDuration * 60);
         setIsBreak(false);
         setCurrentRound((prev) => prev + 1);
         setIsRunning(true); // Auto-start after break
+        onTimerStateChange?.(true);
         return;
       }
       setIsRunning(false);
+      onTimerStateChange?.(false);
     }
 
     return () => clearInterval(interval);
@@ -106,7 +121,9 @@ export const TimerDisplay = ({
     setIsBreak(false);
     setTimeLeft(workDuration * 60);
     setTotalTime(workDuration * 60);
+    setSessionStartTime(workDuration * 60);
     setCurrentRound(1);
+    onTimerStateChange?.(false);
   };
 
   const handleSkip = () => {
@@ -202,7 +219,10 @@ export const TimerDisplay = ({
 
         <Button
           size="icon"
-          onClick={() => setIsRunning(!isRunning)}
+          onClick={() => {
+            setIsRunning(!isRunning);
+            onTimerStateChange?.(!isRunning);
+          }}
           className="h-16 w-16 rounded-full"
         >
           {isRunning ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 ml-1" />}
