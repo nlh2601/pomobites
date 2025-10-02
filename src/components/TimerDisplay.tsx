@@ -7,6 +7,8 @@ interface TimerDisplayProps {
   shortBreak: number;
   longBreak: number;
   roundsBeforeLongBreak: number;
+  background: string;
+  soundOption: string;
 }
 
 export const TimerDisplay = ({
@@ -14,6 +16,8 @@ export const TimerDisplay = ({
   shortBreak,
   longBreak,
   roundsBeforeLongBreak,
+  background,
+  soundOption,
 }: TimerDisplayProps) => {
   const [timeLeft, setTimeLeft] = useState(workDuration * 60);
   const [isRunning, setIsRunning] = useState(false);
@@ -34,12 +38,19 @@ export const TimerDisplay = ({
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (timeLeft === 0) {
-      // Timer completed - play cheerful notification sound
+      // Timer completed - play notification sound
       const playCompletionSound = () => {
         const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
         
-        // Create a pleasant chime sequence (C-E-G major chord)
-        const notes = [523.25, 659.25, 783.99];
+        let notes: number[] = [];
+        
+        if (soundOption === "chime") {
+          notes = [523.25, 659.25, 783.99]; // C-E-G major chord
+        } else if (soundOption === "bell") {
+          notes = [659.25, 783.99, 1046.50]; // E-G-C high
+        } else if (soundOption === "ding") {
+          notes = [880.00, 1046.50]; // A-C
+        }
         
         notes.forEach((frequency, index) => {
           const oscillator = audioContext.createOscillator();
@@ -76,17 +87,19 @@ export const TimerDisplay = ({
         }
         setIsBreak(true);
       } else {
-        // Break ended, start work
+        // Break ended, start work automatically
         setTimeLeft(workDuration * 60);
         setTotalTime(workDuration * 60);
         setIsBreak(false);
         setCurrentRound((prev) => prev + 1);
+        setIsRunning(true); // Auto-start after break
+        return;
       }
       setIsRunning(false);
     }
 
     return () => clearInterval(interval);
-  }, [isRunning, timeLeft, isBreak, currentRound, workDuration, shortBreak, longBreak, roundsBeforeLongBreak]);
+  }, [isRunning, timeLeft, isBreak, currentRound, workDuration, shortBreak, longBreak, roundsBeforeLongBreak, soundOption]);
 
   const handleReset = () => {
     setIsRunning(false);
@@ -123,8 +136,25 @@ export const TimerDisplay = ({
 
   const progress = ((totalTime - timeLeft) / totalTime) * 100;
 
+  const getBackgroundStyle = () => {
+    if (background === "custom") {
+      const customBg = localStorage.getItem("customBackground");
+      return customBg ? { backgroundImage: `url(${customBg})`, backgroundSize: "cover", backgroundPosition: "center" } : {};
+    }
+    
+    const backgrounds: Record<string, string> = {
+      tomato: "linear-gradient(135deg, hsl(var(--bite-red)) 0%, hsl(var(--cafe-warm)) 100%)",
+      cookie: "linear-gradient(135deg, hsl(30 60% 70%) 0%, hsl(35 50% 85%) 100%)",
+      boba: "linear-gradient(135deg, hsl(280 40% 75%) 0%, hsl(290 35% 85%) 100%)",
+      matcha: "linear-gradient(135deg, hsl(150 40% 65%) 0%, hsl(155 35% 80%) 100%)",
+      cafe: "linear-gradient(135deg, hsl(25 45% 60%) 0%, hsl(30 40% 75%) 100%)",
+    };
+    
+    return { background: backgrounds[background] || backgrounds.tomato };
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8">
+    <div className="flex flex-col items-center justify-center min-h-screen p-8 transition-all" style={getBackgroundStyle()}>
       <div className="relative">
         {/* Circular Progress */}
         <svg className="w-80 h-80 transform -rotate-90">
@@ -190,7 +220,7 @@ export const TimerDisplay = ({
 
       {/* Bite Counter */}
       <div className="mt-8 text-base">
-        <span className="font-semibold text-primary">{currentRound}</span>
+        <span className="font-semibold text-primary">{currentRound - 1}</span>
         <span className="text-muted-foreground"> of </span>
         <span className="font-semibold text-primary">{roundsBeforeLongBreak}</span>
         <span className="text-muted-foreground"> bites completed 🍪</span>

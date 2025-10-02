@@ -9,6 +9,10 @@ interface SettingsProps {
   setLongBreak: (value: number) => void;
   roundsBeforeLongBreak: number;
   setRoundsBeforeLongBreak: (value: number) => void;
+  background: string;
+  setBackground: (value: string) => void;
+  soundOption: string;
+  setSoundOption: (value: string) => void;
 }
 
 const Settings = ({
@@ -20,6 +24,10 @@ const Settings = ({
   setLongBreak,
   roundsBeforeLongBreak,
   setRoundsBeforeLongBreak,
+  background,
+  setBackground,
+  soundOption,
+  setSoundOption,
 }: SettingsProps) => {
   return (
     <SettingsPanel
@@ -31,6 +39,10 @@ const Settings = ({
       setLongBreak={setLongBreak}
       roundsBeforeLongBreak={roundsBeforeLongBreak}
       setRoundsBeforeLongBreak={setRoundsBeforeLongBreak}
+      background={background}
+      setBackground={setBackground}
+      soundOption={soundOption}
+      setSoundOption={setSoundOption}
     />
   );
 };

@@ -1,6 +1,8 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Upload } from "lucide-react";
 
 interface SettingsPanelProps {
   workDuration: number;
@@ -11,6 +13,10 @@ interface SettingsPanelProps {
   setLongBreak: (value: number) => void;
   roundsBeforeLongBreak: number;
   setRoundsBeforeLongBreak: (value: number) => void;
+  background: string;
+  setBackground: (value: string) => void;
+  soundOption: string;
+  setSoundOption: (value: string) => void;
 }
 
 export const SettingsPanel = ({
@@ -22,91 +28,156 @@ export const SettingsPanel = ({
   setLongBreak,
   roundsBeforeLongBreak,
   setRoundsBeforeLongBreak,
+  background,
+  setBackground,
+  soundOption,
+  setSoundOption,
 }: SettingsPanelProps) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        localStorage.setItem("customBackground", result);
+        setBackground("custom");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const backgrounds = [
+    { id: "tomato", name: "Tomato Fresh", emoji: "🍅" },
+    { id: "cookie", name: "Cookie Crunch", emoji: "🍪" },
+    { id: "boba", name: "Boba Bliss", emoji: "🧋" },
+    { id: "matcha", name: "Matcha Mood", emoji: "🍵" },
+    { id: "cafe", name: "Café Cozy", emoji: "☕" },
+  ];
+
+  const sounds = [
+    { id: "chime", name: "Chime", emoji: "🔔" },
+    { id: "bell", name: "Bell", emoji: "🛎️" },
+    { id: "ding", name: "Ding", emoji: "✨" },
+  ];
+
   return (
     <div className="flex items-center justify-center min-h-screen p-8">
-      <Card className="w-full max-w-2xl shadow-lg border-2">
-        <CardHeader className="space-y-3">
-          <CardTitle className="text-3xl">🍽️ Bite Settings</CardTitle>
-          <CardDescription className="text-base">
-            Customize your productivity bites to match your appetite for success!
-          </CardDescription>
+      <Card className="w-full max-w-2xl shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-primary">🍱 Snack Settings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-8">
-          {/* Work Duration */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="work-duration" className="text-base font-semibold">
-                🍅 Bite Duration
-              </Label>
-              <span className="text-2xl font-bold text-primary">{workDuration} min</span>
+            <Label className="text-base font-semibold">🍅 Bite Duration (minutes)</Label>
+            <div className="flex items-center gap-4">
+              <Slider
+                value={[workDuration]}
+                onValueChange={(values) => setWorkDuration(values[0])}
+                min={1}
+                max={60}
+                step={1}
+                className="flex-1"
+              />
+              <span className="text-sm font-medium w-12 text-right">{workDuration}</span>
             </div>
-            <Slider
-              id="work-duration"
-              min={1}
-              max={60}
-              step={1}
-              value={[workDuration]}
-              onValueChange={(value) => setWorkDuration(value[0])}
-              className="cursor-pointer"
-            />
           </div>
 
-          {/* Short Break */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="short-break" className="text-base font-semibold">
-                🍪 Quick Snack
-              </Label>
-              <span className="text-2xl font-bold text-primary">{shortBreak} min</span>
+            <Label className="text-base font-semibold">🍪 Quick Snack (minutes)</Label>
+            <div className="flex items-center gap-4">
+              <Slider
+                value={[shortBreak]}
+                onValueChange={(values) => setShortBreak(values[0])}
+                min={1}
+                max={30}
+                step={1}
+                className="flex-1"
+              />
+              <span className="text-sm font-medium w-12 text-right">{shortBreak}</span>
             </div>
-            <Slider
-              id="short-break"
-              min={1}
-              max={30}
-              step={1}
-              value={[shortBreak]}
-              onValueChange={(value) => setShortBreak(value[0])}
-              className="cursor-pointer"
-            />
           </div>
 
-          {/* Long Break */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="long-break" className="text-base font-semibold">
-                🍰 Feast Break
-              </Label>
-              <span className="text-2xl font-bold text-primary">{longBreak} min</span>
+            <Label className="text-base font-semibold">🍰 Feast Break (minutes)</Label>
+            <div className="flex items-center gap-4">
+              <Slider
+                value={[longBreak]}
+                onValueChange={(values) => setLongBreak(values[0])}
+                min={5}
+                max={60}
+                step={1}
+                className="flex-1"
+              />
+              <span className="text-sm font-medium w-12 text-right">{longBreak}</span>
             </div>
-            <Slider
-              id="long-break"
-              min={5}
-              max={60}
-              step={1}
-              value={[longBreak]}
-              onValueChange={(value) => setLongBreak(value[0])}
-              className="cursor-pointer"
-            />
           </div>
 
-          {/* Rounds Before Long Break */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="rounds" className="text-base font-semibold">
-                🍱 Bites Before Feast
-              </Label>
-              <span className="text-2xl font-bold text-primary">{roundsBeforeLongBreak}</span>
+            <Label className="text-base font-semibold">🍱 Bites Before Feast</Label>
+            <div className="flex items-center gap-4">
+              <Slider
+                value={[roundsBeforeLongBreak]}
+                onValueChange={(values) => setRoundsBeforeLongBreak(values[0])}
+                min={2}
+                max={10}
+                step={1}
+                className="flex-1"
+              />
+              <span className="text-sm font-medium w-12 text-right">{roundsBeforeLongBreak}</span>
             </div>
-            <Slider
-              id="rounds"
-              min={2}
-              max={10}
-              step={1}
-              value={[roundsBeforeLongBreak]}
-              onValueChange={(value) => setRoundsBeforeLongBreak(value[0])}
-              className="cursor-pointer"
-            />
+          </div>
+
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">🎨 Background Theme</Label>
+            <div className="grid grid-cols-3 gap-3">
+              {backgrounds.map((bg) => (
+                <Button
+                  key={bg.id}
+                  variant={background === bg.id ? "default" : "outline"}
+                  onClick={() => setBackground(bg.id)}
+                  className="h-20 flex flex-col gap-1"
+                >
+                  <span className="text-2xl">{bg.emoji}</span>
+                  <span className="text-xs">{bg.name}</span>
+                </Button>
+              ))}
+              <label className="cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <Button
+                  variant={background === "custom" ? "default" : "outline"}
+                  className="h-20 w-full flex flex-col gap-1"
+                  type="button"
+                  asChild
+                >
+                  <div>
+                    <Upload className="h-6 w-6" />
+                    <span className="text-xs">Custom</span>
+                  </div>
+                </Button>
+              </label>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">🔊 Notification Sound</Label>
+            <div className="grid grid-cols-3 gap-3">
+              {sounds.map((sound) => (
+                <Button
+                  key={sound.id}
+                  variant={soundOption === sound.id ? "default" : "outline"}
+                  onClick={() => setSoundOption(sound.id)}
+                  className="h-16 flex flex-col gap-1"
+                >
+                  <span className="text-2xl">{sound.emoji}</span>
+                  <span className="text-xs">{sound.name}</span>
+                </Button>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>

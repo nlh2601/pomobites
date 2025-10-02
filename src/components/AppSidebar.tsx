@@ -19,7 +19,7 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader className="border-b p-6 space-y-2">
         <div className="flex items-center gap-3">
           <img src={tomatoChef} alt="Tomato Chef Mascot" className="w-12 h-12" />

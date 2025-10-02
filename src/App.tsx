@@ -17,6 +17,8 @@ const App = () => {
   const [shortBreak, setShortBreak] = useState(5);
   const [longBreak, setLongBreak] = useState(15);
   const [roundsBeforeLongBreak, setRoundsBeforeLongBreak] = useState(4);
+  const [background, setBackground] = useState("tomato");
+  const [soundOption, setSoundOption] = useState("chime");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -25,36 +27,42 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <SidebarProvider>
-            <div className="flex min-h-screen w-full">
-              <AppSidebar />
-              <main className="flex-1">
-                <Routes>
-                  <Route
-                    path="/"
-                    element={
-                      <Index
-                        workDuration={workDuration}
-                        shortBreak={shortBreak}
-                        longBreak={longBreak}
-                        roundsBeforeLongBreak={roundsBeforeLongBreak}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/settings"
-                    element={
-                      <Settings
-                        workDuration={workDuration}
-                        setWorkDuration={setWorkDuration}
-                        shortBreak={shortBreak}
-                        setShortBreak={setShortBreak}
-                        longBreak={longBreak}
-                        setLongBreak={setLongBreak}
-                        roundsBeforeLongBreak={roundsBeforeLongBreak}
-                        setRoundsBeforeLongBreak={setRoundsBeforeLongBreak}
-                      />
-                    }
-                  />
+        <div className="flex min-h-screen w-full">
+          <AppSidebar />
+          <main className="flex-1 relative">
+            <Routes>
+            <Route
+              path="/"
+              element={
+                <Index
+                  workDuration={workDuration}
+                  shortBreak={shortBreak}
+                  longBreak={longBreak}
+                  roundsBeforeLongBreak={roundsBeforeLongBreak}
+                  background={background}
+                  soundOption={soundOption}
+                />
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <Settings
+                  workDuration={workDuration}
+                  setWorkDuration={setWorkDuration}
+                  shortBreak={shortBreak}
+                  setShortBreak={setShortBreak}
+                  longBreak={longBreak}
+                  setLongBreak={setLongBreak}
+                  roundsBeforeLongBreak={roundsBeforeLongBreak}
+                  setRoundsBeforeLongBreak={setRoundsBeforeLongBreak}
+                  background={background}
+                  setBackground={setBackground}
+                  soundOption={soundOption}
+                  setSoundOption={setSoundOption}
+                />
+              }
+            />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
