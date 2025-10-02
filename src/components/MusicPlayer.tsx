@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 
 const musicTracks = [
-  { name: "Cafe Jazz Vibes", url: "https://www.bensound.com/bensound-music/bensound-jazzyfrenchy.mp3" },
+  { name: "Cafe Jazz Vibes", url: "https://pixabay.com/music/traditional-jazz-jazz-restaurant-cafe-music-334836/" },
   { name: "Smooth Jazz", url: "https://www.bensound.com/bensound-music/bensound-jazzcomedy.mp3" },
   { name: "Chill Lounge", url: "https://www.bensound.com/bensound-music/bensound-anewbeginning.mp3" },
   { name: "Study Beats", url: "https://www.bensound.com/bensound-music/bensound-relaxing.mp3" },
