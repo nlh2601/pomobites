@@ -46,6 +46,39 @@ export const SettingsPanel = ({
     }
   };
 
+  const previewSound = (soundId: string) => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    let notes: number[] = [];
+    
+    if (soundId === "chime") {
+      notes = [523.25, 659.25, 783.99]; // C-E-G major chord
+    } else if (soundId === "bell") {
+      notes = [659.25, 783.99, 1046.50]; // E-G-C high
+    } else if (soundId === "ding") {
+      notes = [880.00, 1046.50]; // A-C
+    }
+    
+    notes.forEach((frequency, index) => {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+      
+      const startTime = audioContext.currentTime + (index * 0.15);
+      gainNode.gain.setValueAtTime(0, startTime);
+      gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.5);
+      
+      oscillator.start(startTime);
+      oscillator.stop(startTime + 0.5);
+    });
+  };
+
   const backgrounds = [
     { id: "tomato", name: "Tomato Fresh", emoji: "🍅" },
     { id: "cookie", name: "Cookie Crunch", emoji: "🍪" },
@@ -170,7 +203,10 @@ export const SettingsPanel = ({
                 <Button
                   key={sound.id}
                   variant={soundOption === sound.id ? "default" : "outline"}
-                  onClick={() => setSoundOption(sound.id)}
+                  onClick={() => {
+                    setSoundOption(sound.id);
+                    previewSound(sound.id);
+                  }}
                   className="h-16 flex flex-col gap-1"
                 >
                   <span className="text-2xl">{sound.emoji}</span>
