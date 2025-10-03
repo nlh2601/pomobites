@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Flame } from "lucide-react";
+import { DraggableCard } from "@/components/DraggableCard";
 
 export interface StudySession {
   date: string;
@@ -64,11 +64,8 @@ export const SessionLogger = () => {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>📊 Progress Tracker</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <DraggableCard title="Progress Tracker" icon="📊">
+      <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center gap-2 p-4 rounded-lg bg-secondary/50">
             <Flame className="h-5 w-5 text-orange-500" />
@@ -100,8 +97,8 @@ export const SessionLogger = () => {
             )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </DraggableCard>
   );
 };
 

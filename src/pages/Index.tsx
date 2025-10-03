@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { TimerDisplay } from "@/components/TimerDisplay";
 import { TodoList } from "@/components/TodoList";
-import { MusicPlayer } from "@/components/MusicPlayer";
 import { SessionLogger } from "@/components/SessionLogger";
 
 interface IndexProps {
@@ -11,11 +9,10 @@ interface IndexProps {
   roundsBeforeLongBreak: number;
   background: string;
   soundOption: string;
+  onTimerStateChange: (isRunning: boolean) => void;
 }
 
-const Index = ({ workDuration, shortBreak, longBreak, roundsBeforeLongBreak, background, soundOption }: IndexProps) => {
-  const [timerRunning, setTimerRunning] = useState(false);
-
+const Index = ({ workDuration, shortBreak, longBreak, roundsBeforeLongBreak, background, soundOption, onTimerStateChange }: IndexProps) => {
   return (
     <div className="relative min-h-screen">
       <TimerDisplay
@@ -25,12 +22,8 @@ const Index = ({ workDuration, shortBreak, longBreak, roundsBeforeLongBreak, bac
         roundsBeforeLongBreak={roundsBeforeLongBreak}
         background={background}
         soundOption={soundOption}
-        onTimerStateChange={setTimerRunning}
+        onTimerStateChange={onTimerStateChange}
       />
-      
-      <div className="fixed bottom-6 left-6 flex flex-col gap-4 z-10">
-        <MusicPlayer autoPlayOnTimer={false} timerRunning={timerRunning} />
-      </div>
 
       <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-10">
         <SessionLogger />

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Plus, X, Check } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DraggableCard } from "@/components/DraggableCard";
 
 interface Todo {
   id: string;
@@ -43,16 +44,13 @@ export const TodoList = () => {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>📝 To-Do List</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <DraggableCard title="To-Do List" icon="📝">
+      <div className="space-y-4">
         <div className="flex gap-2">
           <Input
-            placeholder="Add a task..."
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
+            placeholder="Add a new task..."
             onKeyDown={(e) => e.key === "Enter" && addTodo()}
           />
           <Button onClick={addTodo} size="icon">
@@ -60,35 +58,41 @@ export const TodoList = () => {
           </Button>
         </div>
 
-        <div className="space-y-2 max-h-96 overflow-y-auto">
+        <div className="space-y-2 max-h-64 overflow-y-auto">
           {todos.map((todo) => (
             <div
               key={todo.id}
-              className="flex items-center gap-2 p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+              className="flex items-center gap-2 p-2 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
             >
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6"
-                onClick={() => toggleTodo(todo.id)}
+              <Checkbox
+                checked={todo.completed}
+                onCheckedChange={() => toggleTodo(todo.id)}
+              />
+              <span
+                className={`flex-1 text-sm ${
+                  todo.completed ? "line-through text-muted-foreground" : ""
+                }`}
               >
-                <Check className={`h-4 w-4 ${todo.completed ? "text-primary" : "text-muted-foreground"}`} />
-              </Button>
-              <span className={`flex-1 ${todo.completed ? "line-through text-muted-foreground" : ""}`}>
                 {todo.text}
               </span>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6"
                 onClick={() => deleteTodo(todo.id)}
+                className="h-8 w-8"
               >
-                <X className="h-4 w-4" />
+                <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
+
+        {todos.length === 0 && (
+          <p className="text-center text-sm text-muted-foreground py-4">
+            No tasks yet. Add one to get started! 🚀
+          </p>
+        )}
+      </div>
+    </DraggableCard>
   );
 };

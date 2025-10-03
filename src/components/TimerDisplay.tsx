@@ -30,9 +30,12 @@ export const TimerDisplay = ({
   const [sessionStartTime, setSessionStartTime] = useState(workDuration * 60);
 
   useEffect(() => {
-    setTimeLeft(workDuration * 60);
-    setTotalTime(workDuration * 60);
-  }, [workDuration]);
+    if (!isRunning) {
+      setTimeLeft(workDuration * 60);
+      setTotalTime(workDuration * 60);
+      setSessionStartTime(workDuration * 60);
+    }
+  }, [workDuration, isRunning]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
