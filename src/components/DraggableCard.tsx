@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { GripVertical, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,7 @@ export const DraggableCard = ({ title, icon, children, defaultOpen = true }: Dra
     setIsDragging(false);
   };
 
-  useState(() => {
+  useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
@@ -47,7 +47,7 @@ export const DraggableCard = ({ title, icon, children, defaultOpen = true }: Dra
         document.removeEventListener("mouseup", handleMouseUp);
       };
     }
-  });
+  }, [isDragging, dragStart]);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
