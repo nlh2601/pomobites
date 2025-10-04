@@ -26,13 +26,11 @@ const Index = ({ workDuration, shortBreak, longBreak, roundsBeforeLongBreak, bac
         onTimerStateChange={onTimerStateChange}
       />
 
-      <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-10 pointer-events-none">
-        <div className="pointer-events-auto">
-          <SessionLogger transparent={transparent} />
-        </div>
-        <div className="pointer-events-auto">
-          <TodoList transparent={transparent} />
-        </div>
+      <div className="pointer-events-auto fixed right-6 bottom-[20rem] z-10">
+        <SessionLogger transparent={transparent} />
+      </div>
+      <div className="pointer-events-auto fixed right-6 bottom-6 z-10">
+        <TodoList transparent={transparent} />
       </div>
     </div>
   );

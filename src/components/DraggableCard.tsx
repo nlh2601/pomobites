@@ -79,7 +79,7 @@ export const DraggableCard = ({ title, icon, children, defaultOpen = true, trans
             </CollapsibleTrigger>
           </div>
         </CardHeader>
-        <CollapsibleContent>
+        <CollapsibleContent forceMount>
           <CardContent>{children}</CardContent>
         </CollapsibleContent>
       </Card>
