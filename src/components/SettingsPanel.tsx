@@ -17,6 +17,8 @@ interface SettingsPanelProps {
   setBackground: (value: string) => void;
   soundOption: string;
   setSoundOption: (value: string) => void;
+  transparentCards: boolean;
+  setTransparentCards: (value: boolean) => void;
 }
 
 export const SettingsPanel = ({
@@ -32,6 +34,8 @@ export const SettingsPanel = ({
   setBackground,
   soundOption,
   setSoundOption,
+  transparentCards,
+  setTransparentCards,
 }: SettingsPanelProps) => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -213,6 +217,19 @@ export const SettingsPanel = ({
                   <span className="text-xs">{sound.name}</span>
                 </Button>
               ))}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">👻 Transparency</Label>
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={transparentCards}
+                onChange={(e) => setTransparentCards(e.target.checked)}
+                className="w-5 h-5 cursor-pointer"
+              />
+              <span className="text-sm">Make sidebar and cards transparent</span>
             </div>
           </div>
         </CardContent>

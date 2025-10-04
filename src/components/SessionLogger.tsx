@@ -8,7 +8,11 @@ export interface StudySession {
   type: "work" | "break";
 }
 
-export const SessionLogger = () => {
+interface SessionLoggerProps {
+  transparent?: boolean;
+}
+
+export const SessionLogger = ({ transparent = false }: SessionLoggerProps) => {
   const [sessions, setSessions] = useState<StudySession[]>([]);
   const [streak, setStreak] = useState(0);
 
@@ -64,7 +68,7 @@ export const SessionLogger = () => {
   };
 
   return (
-    <DraggableCard title="Progress Tracker" icon="📊">
+    <DraggableCard title="Progress Tracker" icon="📊" transparent={transparent}>
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center gap-2 p-4 rounded-lg bg-secondary/50">

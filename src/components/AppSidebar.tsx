@@ -18,12 +18,16 @@ const items = [
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  transparent?: boolean;
+}
+
+export function AppSidebar({ transparent = false }: AppSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className={transparent ? "bg-transparent border-transparent" : ""}>
       {!isCollapsed && (
         <SidebarHeader className="border-b p-6 space-y-2">
           <div className="flex items-center gap-3">
@@ -35,7 +39,7 @@ export function AppSidebar() {
           </p>
         </SidebarHeader>
       )}
-      <SidebarContent className="pt-16">
+      <SidebarContent className={isCollapsed ? "pt-4" : "pt-4"}>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>

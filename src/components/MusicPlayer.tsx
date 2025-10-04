@@ -27,14 +27,14 @@ interface MusicPlayerProps {
   autoPlayOnTimer?: boolean;
   timerRunning?: boolean;
   audioRef?: RefObject<HTMLAudioElement>;
+  transparent?: boolean;
 }
 
-export const MusicPlayer = ({ autoPlayOnTimer = false, timerRunning = false, audioRef }: MusicPlayerProps) => {
+export const MusicPlayer = ({ autoPlayOnTimer = false, timerRunning = false, audioRef, transparent = false }: MusicPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
   const [volume, setVolume] = useState(50);
   const [isMuted, setIsMuted] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
     if (audioRef?.current) {
@@ -89,12 +89,11 @@ export const MusicPlayer = ({ autoPlayOnTimer = false, timerRunning = false, aud
   };
 
   return (
-    <DraggableCard title="Study Music" icon="🎵" defaultOpen={true}>
+    <DraggableCard title="Study Music" icon="🎵" defaultOpen={true} transparent={transparent}>
       <div className="space-y-4">
         <audio
           ref={audioRef}
           src={musicTracks[currentTrack].url}
-          loop
           onEnded={nextTrack}
         />
 

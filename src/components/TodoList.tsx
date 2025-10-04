@@ -11,7 +11,11 @@ interface Todo {
   completed: boolean;
 }
 
-export const TodoList = () => {
+interface TodoListProps {
+  transparent?: boolean;
+}
+
+export const TodoList = ({ transparent = false }: TodoListProps) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState("");
 
@@ -43,8 +47,26 @@ export const TodoList = () => {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
+
+  const startEdit = (todo: Todo) => {
+    setEditingId(todo.id);
+    setEditText(todo.text);
+  };
+
+  const saveEdit = (id: string) => {
+    if (editText.trim()) {
+      setTodos(todos.map(todo => 
+        todo.id === id ? { ...todo, text: editText } : todo
+      ));
+    }
+    setEditingId(null);
+    setEditText("");
+  };
+
   return (
-    <DraggableCard title="To-Do List" icon="📝">
+    <DraggableCard title="To-Do List" icon="📝" transparent={transparent}>
       <div className="space-y-4">
         <div className="flex gap-2">
           <Input
@@ -68,21 +90,47 @@ export const TodoList = () => {
                 checked={todo.completed}
                 onCheckedChange={() => toggleTodo(todo.id)}
               />
-              <span
-                className={`flex-1 text-sm ${
-                  todo.completed ? "line-through text-muted-foreground" : ""
-                }`}
-              >
-                {todo.text}
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => deleteTodo(todo.id)}
-                className="h-8 w-8"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              {editingId === todo.id ? (
+                <>
+                  <Input
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") saveEdit(todo.id);
+                      if (e.key === "Escape") setEditingId(null);
+                    }}
+                    className="flex-1 h-8"
+                    autoFocus
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => saveEdit(todo.id)}
+                    className="h-8 w-8"
+                  >
+                    ✓
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <span
+                    className={`flex-1 text-sm cursor-pointer ${
+                      todo.completed ? "line-through text-muted-foreground" : ""
+                    }`}
+                    onDoubleClick={() => startEdit(todo)}
+                  >
+                    {todo.text}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => deleteTodo(todo.id)}
+                    className="h-8 w-8"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </>
+              )}
             </div>
           ))}
         </div>

@@ -13,6 +13,8 @@ interface SettingsProps {
   setBackground: (value: string) => void;
   soundOption: string;
   setSoundOption: (value: string) => void;
+  transparentCards: boolean;
+  setTransparentCards: (value: boolean) => void;
 }
 
 const Settings = ({
@@ -28,6 +30,8 @@ const Settings = ({
   setBackground,
   soundOption,
   setSoundOption,
+  transparentCards,
+  setTransparentCards,
 }: SettingsProps) => {
   return (
     <SettingsPanel
@@ -43,6 +47,8 @@ const Settings = ({
       setBackground={setBackground}
       soundOption={soundOption}
       setSoundOption={setSoundOption}
+      transparentCards={transparentCards}
+      setTransparentCards={setTransparentCards}
     />
   );
 };

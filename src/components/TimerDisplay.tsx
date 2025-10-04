@@ -22,20 +22,39 @@ export const TimerDisplay = ({
   soundOption,
   onTimerStateChange,
 }: TimerDisplayProps) => {
-  const [timeLeft, setTimeLeft] = useState(workDuration * 60);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const saved = localStorage.getItem("pomobites-timer-state");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return parsed.timeLeft || workDuration * 60;
+    }
+    return workDuration * 60;
+  });
   const [isRunning, setIsRunning] = useState(false);
-  const [isBreak, setIsBreak] = useState(false);
-  const [currentRound, setCurrentRound] = useState(1);
+  const [isBreak, setIsBreak] = useState(() => {
+    const saved = localStorage.getItem("pomobites-timer-state");
+    if (saved) {
+      return JSON.parse(saved).isBreak || false;
+    }
+    return false;
+  });
+  const [currentRound, setCurrentRound] = useState(() => {
+    const saved = localStorage.getItem("pomobites-timer-state");
+    if (saved) {
+      return JSON.parse(saved).currentRound || 1;
+    }
+    return 1;
+  });
   const [totalTime, setTotalTime] = useState(workDuration * 60);
   const [sessionStartTime, setSessionStartTime] = useState(workDuration * 60);
 
   useEffect(() => {
-    if (!isRunning) {
-      setTimeLeft(workDuration * 60);
-      setTotalTime(workDuration * 60);
-      setSessionStartTime(workDuration * 60);
-    }
-  }, [workDuration, isRunning]);
+    localStorage.setItem("pomobites-timer-state", JSON.stringify({
+      timeLeft,
+      isBreak,
+      currentRound
+    }));
+  }, [timeLeft, isBreak, currentRound]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -126,6 +145,7 @@ export const TimerDisplay = ({
     setTotalTime(workDuration * 60);
     setSessionStartTime(workDuration * 60);
     setCurrentRound(1);
+    localStorage.removeItem("pomobites-timer-state");
     onTimerStateChange?.(false);
   };
 
@@ -246,23 +266,29 @@ export const TimerDisplay = ({
         <span className="font-semibold text-primary">{currentRound - 1}</span>
         <span className="text-muted-foreground"> of </span>
         <span className="font-semibold text-primary">{roundsBeforeLongBreak}</span>
-        <span className="text-muted-foreground"> bites completed 🍪</span>
+        <span className="text-muted-foreground"> bites completed {currentRound > roundsBeforeLongBreak ? "🍰" : "🍪"}</span>
       </div>
       
       {/* Snack Stack Progress */}
       <div className="mt-4 flex gap-2">
-        {Array.from({ length: roundsBeforeLongBreak }).map((_, index) => (
-          <div
-            key={index}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xl transition-all duration-300 ${
-              index < currentRound - 1 
-                ? "bg-primary/20 scale-110" 
-                : "bg-secondary opacity-50"
-            }`}
-          >
-            {index < currentRound - 1 ? "🍪" : "⭕"}
-          </div>
-        ))}
+        {Array.from({ length: roundsBeforeLongBreak }).map((_, index) => {
+          const completedRounds = currentRound - 1;
+          const cycleIndex = Math.floor(completedRounds / roundsBeforeLongBreak);
+          const snackIcon = cycleIndex === 0 ? "🍪" : cycleIndex === 1 ? "🍰" : cycleIndex === 2 ? "🍩" : "🧁";
+          
+          return (
+            <div
+              key={index}
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-xl transition-all duration-300 ${
+                index < (completedRounds % roundsBeforeLongBreak) || completedRounds >= roundsBeforeLongBreak
+                  ? "bg-primary/20 scale-110" 
+                  : "bg-secondary opacity-50"
+              }`}
+            >
+              {index < (completedRounds % roundsBeforeLongBreak) || completedRounds >= roundsBeforeLongBreak ? snackIcon : "⭕"}
+            </div>
+          );
+        })}
       </div>
       
       {/* Motivational Message */}

@@ -21,6 +21,7 @@ const App = () => {
   const [background, setBackground] = useState("tomato");
   const [soundOption, setSoundOption] = useState("chime");
   const [timerRunning, setTimerRunning] = useState(false);
+  const [transparentCards, setTransparentCards] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   return (
@@ -31,7 +32,7 @@ const App = () => {
         <BrowserRouter>
           <SidebarProvider>
             <div className="flex min-h-screen w-full">
-              <AppSidebar />
+              <AppSidebar transparent={transparentCards} />
               <main className="flex-1 relative">
                 <SidebarTrigger className="fixed top-4 left-4 z-50" />
                 <Routes>
@@ -46,6 +47,7 @@ const App = () => {
                         background={background}
                         soundOption={soundOption}
                         onTimerStateChange={setTimerRunning}
+                        transparent={transparentCards}
                       />
                     }
                   />
@@ -65,6 +67,8 @@ const App = () => {
                         setBackground={setBackground}
                         soundOption={soundOption}
                         setSoundOption={setSoundOption}
+                        transparentCards={transparentCards}
+                        setTransparentCards={setTransparentCards}
                       />
                     }
                   />
@@ -79,6 +83,7 @@ const App = () => {
                   autoPlayOnTimer={false} 
                   timerRunning={timerRunning}
                   audioRef={audioRef}
+                  transparent={transparentCards}
                 />
               </div>
             </div>

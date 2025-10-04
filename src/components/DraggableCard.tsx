@@ -9,9 +9,10 @@ interface DraggableCardProps {
   icon?: string;
   children: ReactNode;
   defaultOpen?: boolean;
+  transparent?: boolean;
 }
 
-export const DraggableCard = ({ title, icon, children, defaultOpen = true }: DraggableCardProps) => {
+export const DraggableCard = ({ title, icon, children, defaultOpen = true, transparent = false }: DraggableCardProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -52,7 +53,7 @@ export const DraggableCard = ({ title, icon, children, defaultOpen = true }: Dra
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <Card
-        className="w-full max-w-md shadow-lg"
+        className={`w-full max-w-md shadow-lg ${transparent ? "bg-background/70 backdrop-blur-sm" : ""}`}
         style={{
           transform: `translate(${position.x}px, ${position.y}px)`,
           cursor: isDragging ? "grabbing" : "auto",
