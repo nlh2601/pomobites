@@ -79,7 +79,7 @@ export const DraggableCard = ({ title, icon, children, defaultOpen = true, trans
             </CollapsibleTrigger>
           </div>
         </CardHeader>
-        <CollapsibleContent forceMount>
+        <CollapsibleContent forceMount className="data-[state=closed]:hidden">
           <CardContent>{children}</CardContent>
         </CollapsibleContent>
       </Card>
