@@ -41,9 +41,9 @@ export const TimerDisplay = ({
   const [currentRound, setCurrentRound] = useState(() => {
     const saved = localStorage.getItem("pomobites-timer-state");
     if (saved) {
-      return JSON.parse(saved).currentRound || 1;
+      return JSON.parse(saved).currentRound || 0;
     }
-    return 1;
+    return 0;
   });
   const [totalTime, setTotalTime] = useState(workDuration * 60);
   const [sessionStartTime, setSessionStartTime] = useState(workDuration * 60);
@@ -127,8 +127,8 @@ export const TimerDisplay = ({
         setSessionStartTime(workDuration * 60);
         setIsBreak(false);
         const nextRound = currentRound + 1;
-        // Reset to 1 after completing roundsBeforeLongBreak
-        setCurrentRound(nextRound > roundsBeforeLongBreak ? 1 : nextRound);
+        // After completing round 4 (index 4), reset to 0
+        setCurrentRound(nextRound >= roundsBeforeLongBreak ? 0 : nextRound);
         setIsRunning(true); // Auto-start after break
         onTimerStateChange?.(true);
         return;
@@ -146,7 +146,7 @@ export const TimerDisplay = ({
     setTimeLeft(workDuration * 60);
     setTotalTime(workDuration * 60);
     setSessionStartTime(workDuration * 60);
-    setCurrentRound(1);
+    setCurrentRound(0);
     localStorage.removeItem("pomobites-timer-state");
     onTimerStateChange?.(false);
   };
@@ -166,8 +166,8 @@ export const TimerDisplay = ({
       setTotalTime(workDuration * 60);
       setIsBreak(false);
       const nextRound = currentRound + 1;
-      // Reset to 1 after completing roundsBeforeLongBreak
-      setCurrentRound(nextRound > roundsBeforeLongBreak ? 1 : nextRound);
+      // After completing round 4, reset to 0
+      setCurrentRound(nextRound >= roundsBeforeLongBreak ? 0 : nextRound);
     }
     setIsRunning(false);
   };
@@ -267,29 +267,28 @@ export const TimerDisplay = ({
 
       {/* Bite Counter */}
       <div className="mt-8 text-base">
-        <span className="font-semibold text-primary">{currentRound - 1}</span>
+        <span className="font-semibold text-primary">{currentRound}</span>
         <span className="text-muted-foreground"> of </span>
         <span className="font-semibold text-primary">{roundsBeforeLongBreak}</span>
-        <span className="text-muted-foreground"> bites completed {currentRound > roundsBeforeLongBreak ? "🍰" : "🍪"}</span>
+        <span className="text-muted-foreground"> bites completed {Math.floor(currentRound / roundsBeforeLongBreak) > 0 ? "🍰" : "🍪"}</span>
       </div>
       
       {/* Snack Stack Progress */}
       <div className="mt-4 flex gap-2">
         {Array.from({ length: roundsBeforeLongBreak }).map((_, index) => {
-          const completedRounds = currentRound - 1;
-          const cycleIndex = Math.floor(completedRounds / roundsBeforeLongBreak);
+          const cycleIndex = Math.floor(currentRound / roundsBeforeLongBreak);
           const snackIcon = cycleIndex === 0 ? "🍪" : cycleIndex === 1 ? "🍰" : cycleIndex === 2 ? "🍩" : "🧁";
           
           return (
             <div
               key={index}
               className={`w-8 h-8 rounded-full flex items-center justify-center text-xl transition-all duration-300 ${
-                index < (completedRounds % roundsBeforeLongBreak) || completedRounds >= roundsBeforeLongBreak
+                index < (currentRound % roundsBeforeLongBreak)
                   ? "bg-primary/20 scale-110" 
                   : "bg-secondary opacity-50"
               }`}
             >
-              {index < (completedRounds % roundsBeforeLongBreak) || completedRounds >= roundsBeforeLongBreak ? snackIcon : "⭕"}
+              {index < (currentRound % roundsBeforeLongBreak) ? snackIcon : "⭕"}
             </div>
           );
         })}
@@ -299,7 +298,7 @@ export const TimerDisplay = ({
       <div className="mt-6 text-sm text-muted-foreground italic max-w-md text-center">
         {isBreak 
           ? "Time to recharge with a tasty break! ☕" 
-          : currentRound === 1 
+          : currentRound === 0 
             ? "Let's start munching through your tasks! 🎉"
             : "You're on a roll! Keep those bites coming! 💪"
         }
