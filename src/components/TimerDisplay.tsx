@@ -45,6 +45,13 @@ export const TimerDisplay = ({
     }
     return 0;
   });
+  const [emojiCycle, setEmojiCycle] = useState(() => {
+    const saved = localStorage.getItem("pomobites-timer-state");
+    if (saved) {
+      return JSON.parse(saved).emojiCycle || 0;
+    }
+    return 0;
+  });
   const [totalTime, setTotalTime] = useState(workDuration * 60);
   const [sessionStartTime, setSessionStartTime] = useState(workDuration * 60);
 
@@ -52,9 +59,10 @@ export const TimerDisplay = ({
     localStorage.setItem("pomobites-timer-state", JSON.stringify({
       timeLeft,
       isBreak,
-      currentRound
+      currentRound,
+      emojiCycle
     }));
-  }, [timeLeft, isBreak, currentRound]);
+  }, [timeLeft, isBreak, currentRound, emojiCycle]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -127,8 +135,13 @@ export const TimerDisplay = ({
         setSessionStartTime(workDuration * 60);
         setIsBreak(false);
         const nextRound = currentRound + 1;
-        // After reaching 4, the next increment (5) resets to 0 and changes emoji
-        setCurrentRound(nextRound > roundsBeforeLongBreak ? 0 : nextRound);
+        // After reaching 4, the next increment (5) resets to 0 and increments emoji cycle
+        if (nextRound > roundsBeforeLongBreak) {
+          setCurrentRound(0);
+          setEmojiCycle(prev => prev + 1);
+        } else {
+          setCurrentRound(nextRound);
+        }
         setIsRunning(true); // Auto-start after break
         onTimerStateChange?.(true);
         return;
@@ -147,6 +160,7 @@ export const TimerDisplay = ({
     setTotalTime(workDuration * 60);
     setSessionStartTime(workDuration * 60);
     setCurrentRound(0);
+    setEmojiCycle(0);
     localStorage.removeItem("pomobites-timer-state");
     onTimerStateChange?.(false);
   };
@@ -166,8 +180,13 @@ export const TimerDisplay = ({
       setTotalTime(workDuration * 60);
       setIsBreak(false);
       const nextRound = currentRound + 1;
-      // After reaching 4, the next increment (5) resets to 0
-      setCurrentRound(nextRound > roundsBeforeLongBreak ? 0 : nextRound);
+      // After reaching 4, the next increment (5) resets to 0 and increments emoji cycle
+      if (nextRound > roundsBeforeLongBreak) {
+        setCurrentRound(0);
+        setEmojiCycle(prev => prev + 1);
+      } else {
+        setCurrentRound(nextRound);
+      }
     }
     setIsRunning(false);
   };
@@ -270,25 +289,24 @@ export const TimerDisplay = ({
         <span className="font-semibold text-primary">{currentRound}</span>
         <span className="text-muted-foreground"> of </span>
         <span className="font-semibold text-primary">{roundsBeforeLongBreak}</span>
-        <span className="text-muted-foreground"> bites completed {Math.floor(currentRound / roundsBeforeLongBreak) > 0 ? "🍰" : "🍪"}</span>
+        <span className="text-muted-foreground"> bites completed {emojiCycle === 0 ? "🍪" : emojiCycle === 1 ? "🍰" : emojiCycle === 2 ? "🍩" : "🧁"}</span>
       </div>
       
       {/* Snack Stack Progress */}
       <div className="mt-4 flex gap-2">
         {Array.from({ length: roundsBeforeLongBreak }).map((_, index) => {
-          const cycleIndex = Math.floor(currentRound / roundsBeforeLongBreak);
-          const snackIcon = cycleIndex === 0 ? "🍪" : cycleIndex === 1 ? "🍰" : cycleIndex === 2 ? "🍩" : "🧁";
+          const snackIcon = emojiCycle === 0 ? "🍪" : emojiCycle === 1 ? "🍰" : emojiCycle === 2 ? "🍩" : "🧁";
           
           return (
             <div
               key={index}
               className={`w-8 h-8 rounded-full flex items-center justify-center text-xl transition-all duration-300 ${
-                index < (currentRound % roundsBeforeLongBreak)
+                index < currentRound
                   ? "bg-primary/20 scale-110" 
                   : "bg-secondary opacity-50"
               }`}
             >
-              {index < (currentRound % roundsBeforeLongBreak) ? snackIcon : "⭕"}
+              {index < currentRound ? snackIcon : "⭕"}
             </div>
           );
         })}
