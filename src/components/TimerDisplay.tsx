@@ -126,7 +126,9 @@ export const TimerDisplay = ({
         setTotalTime(workDuration * 60);
         setSessionStartTime(workDuration * 60);
         setIsBreak(false);
-        setCurrentRound((prev) => prev + 1);
+        const nextRound = currentRound + 1;
+        // Reset to 1 after completing roundsBeforeLongBreak
+        setCurrentRound(nextRound > roundsBeforeLongBreak ? 1 : nextRound);
         setIsRunning(true); // Auto-start after break
         onTimerStateChange?.(true);
         return;
@@ -163,7 +165,9 @@ export const TimerDisplay = ({
       setTimeLeft(workDuration * 60);
       setTotalTime(workDuration * 60);
       setIsBreak(false);
-      setCurrentRound((prev) => prev + 1);
+      const nextRound = currentRound + 1;
+      // Reset to 1 after completing roundsBeforeLongBreak
+      setCurrentRound(nextRound > roundsBeforeLongBreak ? 1 : nextRound);
     }
     setIsRunning(false);
   };

@@ -39,7 +39,7 @@ export function AppSidebar({ transparent = false }: AppSidebarProps) {
           </p>
         </SidebarHeader>
       )}
-      <SidebarContent className={isCollapsed ? "pt-4" : "pt-4"}>
+      <SidebarContent className={isCollapsed ? "pt-20 flex items-center justify-center" : "pt-4"}>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
