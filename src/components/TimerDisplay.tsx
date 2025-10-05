@@ -289,13 +289,13 @@ export const TimerDisplay = ({
         <span className="font-semibold text-primary">{currentRound}</span>
         <span className="text-muted-foreground"> of </span>
         <span className="font-semibold text-primary">{roundsBeforeLongBreak}</span>
-        <span className="text-muted-foreground"> bites completed {emojiCycle === 0 ? "🍪" : emojiCycle === 1 ? "🍰" : emojiCycle === 2 ? "🍩" : "🧁"}</span>
+        <span className="text-muted-foreground"> bites completed {["🍪", "🍰", "🍩", "🧁"][emojiCycle % 4]}</span>
       </div>
       
       {/* Snack Stack Progress */}
       <div className="mt-4 flex gap-2">
         {Array.from({ length: roundsBeforeLongBreak }).map((_, index) => {
-          const snackIcon = emojiCycle === 0 ? "🍪" : emojiCycle === 1 ? "🍰" : emojiCycle === 2 ? "🍩" : "🧁";
+          const snackIcon = ["🍪", "🍰", "🍩", "🧁"][emojiCycle % 4];
           
           return (
             <div
