@@ -127,8 +127,8 @@ export const TimerDisplay = ({
         setSessionStartTime(workDuration * 60);
         setIsBreak(false);
         const nextRound = currentRound + 1;
-        // After completing round 4 (index 4), reset to 0
-        setCurrentRound(nextRound >= roundsBeforeLongBreak ? 0 : nextRound);
+        // After reaching 4, the next increment (5) resets to 0 and changes emoji
+        setCurrentRound(nextRound > roundsBeforeLongBreak ? 0 : nextRound);
         setIsRunning(true); // Auto-start after break
         onTimerStateChange?.(true);
         return;
@@ -166,8 +166,8 @@ export const TimerDisplay = ({
       setTotalTime(workDuration * 60);
       setIsBreak(false);
       const nextRound = currentRound + 1;
-      // After completing round 4, reset to 0
-      setCurrentRound(nextRound >= roundsBeforeLongBreak ? 0 : nextRound);
+      // After reaching 4, the next increment (5) resets to 0
+      setCurrentRound(nextRound > roundsBeforeLongBreak ? 0 : nextRound);
     }
     setIsRunning(false);
   };
