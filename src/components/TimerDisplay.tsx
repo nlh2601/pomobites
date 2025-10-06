@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { logSession } from "@/components/SessionLogger";
 import matchaLatteImg from "@/assets/matcha-latte.jpg";
 import cookieImg from "@/assets/cookie.jpg";
+import mountainImg from "@/assets/mountain.jpg";
 
 interface TimerDisplayProps {
   workDuration: number;
@@ -223,6 +224,10 @@ export const TimerDisplay = ({
     
     if (background === "cookie-photo") {
       return { backgroundImage: `url(${cookieImg})`, backgroundSize: "cover", backgroundPosition: "center" };
+    }
+    
+    if (background === "mountain") {
+      return { backgroundImage: `url(${mountainImg})`, backgroundSize: "cover", backgroundPosition: "center" };
     }
     
     return { background: backgrounds[background] || backgrounds.tomato };

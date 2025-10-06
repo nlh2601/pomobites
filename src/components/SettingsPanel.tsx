@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import matchaLatteImg from "@/assets/matcha-latte.jpg";
 import cookieImg from "@/assets/cookie.jpg";
+import mountainImg from "@/assets/mountain.jpg";
 
 interface SettingsPanelProps {
   workDuration: number;
@@ -93,6 +94,7 @@ export const SettingsPanel = ({
     { id: "cafe", name: "Café Cozy", emoji: "☕" },
     { id: "matcha-latte", name: "Matcha Latte", emoji: "🍵", image: matchaLatteImg },
     { id: "cookie-photo", name: "Cookie Photo", emoji: "🍪", image: cookieImg },
+    { id: "mountain", name: "Mountain View", emoji: "🏔️", image: mountainImg },
   ];
 
   const sounds = [
