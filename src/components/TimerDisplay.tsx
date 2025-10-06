@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logSession } from "@/components/SessionLogger";
+import matchaLatteImg from "@/assets/matcha-latte.jpg";
+import cookieImg from "@/assets/cookie.jpg";
 
 interface TimerDisplayProps {
   workDuration: number;
@@ -211,7 +213,17 @@ export const TimerDisplay = ({
       boba: "linear-gradient(135deg, hsl(280 40% 75%) 0%, hsl(290 35% 85%) 100%)",
       matcha: "linear-gradient(135deg, hsl(150 40% 65%) 0%, hsl(155 35% 80%) 100%)",
       cafe: "linear-gradient(135deg, hsl(25 45% 60%) 0%, hsl(30 40% 75%) 100%)",
+      "matcha-latte": "",
+      "cookie-photo": "",
     };
+    
+    if (background === "matcha-latte") {
+      return { backgroundImage: `url(${matchaLatteImg})`, backgroundSize: "cover", backgroundPosition: "center" };
+    }
+    
+    if (background === "cookie-photo") {
+      return { backgroundImage: `url(${cookieImg})`, backgroundSize: "cover", backgroundPosition: "center" };
+    }
     
     return { background: backgrounds[background] || backgrounds.tomato };
   };
