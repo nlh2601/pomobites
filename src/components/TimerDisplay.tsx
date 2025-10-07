@@ -3,7 +3,6 @@ import { Play, Pause, RotateCcw, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logSession } from "@/components/SessionLogger";
 import matchaLatteImg from "@/assets/matcha-latte.jpg";
-import cookieImg from "@/assets/cookie.jpg";
 import mountainImg from "@/assets/mountain.jpg";
 
 interface TimerDisplayProps {
@@ -220,10 +219,6 @@ export const TimerDisplay = ({
     
     if (background === "matcha-latte") {
       return { backgroundImage: `url(${matchaLatteImg})`, backgroundSize: "cover", backgroundPosition: "center" };
-    }
-    
-    if (background === "cookie-photo") {
-      return { backgroundImage: `url(${cookieImg})`, backgroundSize: "cover", backgroundPosition: "center" };
     }
     
     if (background === "mountain") {
